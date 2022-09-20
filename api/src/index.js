@@ -12,7 +12,7 @@ server.use(bodyParser.urlencoded({extended: false}));
 server.use(bodyParser.json());
 server.use('/mva',routes);
 
-const port = process.env.NODE_LOCAL_PORT || 3000;
+const port = process.env.NODE_LOCAL_PORT || 3001;
 
 server.listen(port, () => {
     console.log(`Servidor rodando na porta:${port}`);
