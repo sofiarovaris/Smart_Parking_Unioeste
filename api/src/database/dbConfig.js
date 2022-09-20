@@ -3,7 +3,7 @@ const util = require('util');
 require('dotenv').config({path:'../.env'});
 
 const connection = mysql.createPool({
-    host: 'localhost',
+    host: '172.17.0.1',
     user: 'root',
     password: 'mysql12345',
     database: 'estacionamento',
