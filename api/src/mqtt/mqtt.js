@@ -1,7 +1,8 @@
 const mqtt = require('mqtt');
+require('dotenv').config({path:'../.env'});
 
-const host = '200.201.88.141';
-const port = '1883';
+const host = process.env.MQTT_HOST;
+const port = process.env.MQTT_PORT;
 
 const connectUrl = `mqtt://${host}:${port}`;
 
@@ -9,6 +10,7 @@ const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
 
 const client = conectaMqtt();
 
+//funcao que conecta o MQTT
 function conectaMqtt(){
     const client = mqtt.connect(connectUrl, {
       clientId,
@@ -16,6 +18,8 @@ function conectaMqtt(){
       connectTimeout: 4000,
       reconnectPeriod: 1000,
     });
+
+    //quando receber uma mensagem nos tópicos inscritos
     client.on('message', async (topic, payload) => {
         console.log('Received Message:', topic, payload.toString());
         if(payload.toString() == 's'){ //tem carro na vaga
@@ -28,8 +32,8 @@ function conectaMqtt(){
     return client;
 }
 
+//funcao para publicar uma mensagem em um tópico
 const publish = async (topic, param) => {
-    //console.log('publicando no topico '+topic+" o valor "+param);
     if(client.connected == true){
         client.publish(topic, param, { qos: 0, retain: false }, (error) => {
             if (error) {
@@ -39,6 +43,7 @@ const publish = async (topic, param) => {
     }
 }
 
+//funcao para se inscrever em um topico
 const subscribe = async (topic) => {
     var topicRes = topic + '/reservado';
 
@@ -54,6 +59,7 @@ const subscribe = async (topic) => {
 
 }
 
+// funcao para se desinscrever do topico
 const unsubscribe = async (topic) => {
     var topicRes = topic + '/reservado';
 
@@ -67,6 +73,7 @@ const unsubscribe = async (topic) => {
     }
 }
 
+//funcao que se inscreve em todos os topicos contidos no banco de dados
 const subscribeAllFromDB = async () => {
     const vagaServices = require('../services/vagaServices');
     let vagas = await vagaServices.listar();
@@ -81,6 +88,7 @@ const subscribeAllFromDB = async () => {
     }
 }
 
+// funcao que verifica o status das vagas
 function parkingStatus(topic, status){
     const mqttServices = require('../services/mqttServices');
     if(status == false){

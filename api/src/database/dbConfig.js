@@ -2,19 +2,21 @@ const mysql = require('mysql2');
 const util = require('util');
 require('dotenv').config({path:'../.env'});
 
+// arquivo de conexao com o banco de dados
+
 const connection = mysql.createPool({
-    host: '172.17.0.1',
-    user: 'root',
-    password: 'mysql12345',
-    database: 'estacionamento',
-    port : 3306
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    port : process.env.DB_PORT
 });
 
 connection.getConnection((error, connection) => {
     if(error){
         throw error;
     }else{
-        console.log('Conectado ao Banco de dados: estacionamento');
+        console.log('Conectado ao Banco de dados');
         const mqttController = require('../mqtt/mqtt');
         mqttController.subscribeAllFromDB();
         if (connection) connection.release();

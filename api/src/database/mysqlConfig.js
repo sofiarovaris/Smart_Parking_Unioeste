@@ -1,5 +1,6 @@
 const db = require('../database/dbConfig');
 
+//arquivo de configuracao do mysql
 const configurar = () => {
     
     return new Promise((aceito, rejeitado) => {
